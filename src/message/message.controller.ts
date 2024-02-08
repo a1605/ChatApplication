@@ -1,5 +1,5 @@
 import { MessageService } from 'src/message/message.service';
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 
 @Controller('msg')
 export class MessageController {
@@ -8,14 +8,14 @@ export class MessageController {
   async getAllChats() {
     return await this.messageService.getAllChats();
   }
-  @Get('users/:senderName/:receiverName')
+  @Get('chats')
   async allChatBetweenTwoUsers(
-    @Param('senderName') senderName: string,
-    @Param('receiverName') receiverName: string,
+    @Query('sender_user_id') sender_user_id: number,
+    @Query('receiver_user_id') receiver_user_id: number,
   ) {
     return await this.messageService.allChatsHistoryWithTwoUsers(
-      senderName,
-      receiverName,
+      sender_user_id,
+      receiver_user_id,
     );
   }
 }

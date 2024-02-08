@@ -6,13 +6,13 @@ import { HASH_VALUE, MAX_NUM, MIN_NUM } from 'constant';
 import { skipCount } from 'utills';
 import { User } from 'src/user/user.entity';
 import { MessageDto } from './messageDto/message.dto';
-import * as bcrypt from 'bcrypt';
+import { UserService } from './../user/user.service';
 
 @Injectable()
 export class MessageService {
   constructor(
     @InjectRepository(Message) private messageRepo: Repository<Message>,
-    @InjectRepository(User) private userRepo: Repository<User>,
+    private userService: UserService,
   ) {}
 
   async addChatHistory(messageDto: MessageDto) {
@@ -27,7 +27,10 @@ export class MessageService {
       if (err.status) {
         throw err;
       }
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Chat History not found',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -52,25 +55,25 @@ export class MessageService {
       if (err.status) {
         throw err;
       }
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Chat not found',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
-  async allChatsHistoryWithTwoUsers(senderName, receiverName) {
+  async allChatsHistoryWithTwoUsers(sender_user_id, receiver_user_id) {
     try {
-      const sender = await this.userRepo.findOne({
-        where: { username: senderName },
-      });
-
-      const senderId = sender.id;
-      const receiver = await this.userRepo.findOne({
-        where: { username: receiverName },
-      });
-      const receiverId = receiver.id;
       const history = await this.messageRepo.find({
         where: [
-          { sender_user_id: senderId, receiver_user_id: receiverId },
+          {
+            sender_user_id: sender_user_id,
+            receiver_user_id: receiver_user_id,
+          },
 
-          { sender_user_id: receiverId, receiver_user_id: senderId },
+          {
+            sender_user_id: receiver_user_id,
+            receiver_user_id: sender_user_id,
+          },
         ],
         order: {
           createdAt: 'ASC',

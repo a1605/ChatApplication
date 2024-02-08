@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable, Query } from '@nestjs/common';
-import { Not, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from './user.entity';
@@ -37,9 +37,9 @@ export class UserService {
         });
         await this.userRepo.save(user);
       }
+      return true;
     } catch (error) {
-      console.error('Error:', error.message);
-      process.exit(1);
+      return false;
     }
   }
 
@@ -50,7 +50,10 @@ export class UserService {
       if (err.status) {
         throw err;
       }
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'No User Found',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -65,7 +68,10 @@ export class UserService {
       if (err.status) {
         throw err;
       }
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'User not found',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
   async findUsernameUsingSocketId(socketId: string) {
@@ -78,7 +84,10 @@ export class UserService {
       if (err.status) {
         throw err;
       }
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'User not found',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
   async findUserIdByUserName(username: string) {
@@ -91,7 +100,10 @@ export class UserService {
       if (err.status) {
         throw err;
       }
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'User not found',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

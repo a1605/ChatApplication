@@ -2,10 +2,16 @@ const socket = io(SERVER_URL);
 function joinChat() {
   const senderName = document.getElementById('username').value;
   password = document.getElementById('password').value;
-  socket.emit('new-user-joined', senderName, password);
-  populateUserDropdown();
-  const searchContainer = document.getElementById('search-container');
-  searchContainer.style.display = 'block';
+  socket.emit('new-user-joined', { username: senderName, password: password });
+  socket.on('registration-response', (response) => {
+    if (response.success) {
+      populateUserDropdown();
+      const searchContainer = document.getElementById('search-container');
+      searchContainer.style.display = 'block';
+    } else {
+      alert('Password does not match. Please try again.');
+    }
+  });
 }
 async function populateUserDropdown() {
   const senderName = document.getElementById('username').value;
@@ -30,7 +36,13 @@ async function startChat() {
   chatDive.innerHTML = `<div>Chat started with user ${receiverName}</div>`;
   const chatContainer = document.getElementById('chat-container');
   chatContainer.style.display = 'block';
-  const FETCH_HISTORY_URL = `${SERVER_URL}${FETCH_CHAT_HISTORY_PATH}${senderName}/${receiverName}`;
+  const senderUrl = `${FETCH_USER_USERID}${senderName}`;
+  const receiverUrl = `${FETCH_USER_USERID}${receiverName}`;
+  const senderUserId = await fetch(senderUrl);
+  const receiverUserId = await fetch(receiverUrl);
+  const sender_user_id = await senderUserId.json();
+  const receiver_user_id = await receiverUserId.json();
+  const FETCH_HISTORY_URL = `${SERVER_URL}${FETCH_CHAT_HISTORY_PATH}sender_user_id=${sender_user_id}&receiver_user_id=${receiver_user_id}`;
   const history = await fetch(FETCH_HISTORY_URL);
   const allHistory = await history.json();
   const chatHistoryDiv = document.getElementById('chat-history');

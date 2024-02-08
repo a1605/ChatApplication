@@ -24,8 +24,14 @@ export class ChatGateway {
 
   @SubscribeMessage('new-user-joined')
   async handleNewAndExistingUserJoined(client: any, data: any) {
-    const createUserDto = new CreateUserDto(data[0], data[1], client.id);
-    await this.userService.registerOrLoginUser(createUserDto);
+    const createUserDto = new CreateUserDto(
+      data.username,
+      data.password,
+      client.id,
+    );
+    const registrationStatus =
+      await this.userService.registerOrLoginUser(createUserDto);
+    client.emit('registration-response', { success: registrationStatus });
   }
 
   @SubscribeMessage('send')
@@ -37,10 +43,8 @@ export class ChatGateway {
       await this.userService.findUserIdByUserName(senderName);
     const receiverUserId =
       await this.userService.findUserIdByUserName(receiverName);
-      const messageDto=new MessageDto(senderUserId,receiverUserId,message);
-    await this.messageService.addChatHistory(
-      messageDto
-    );
+    const messageDto = new MessageDto(senderUserId, receiverUserId, message);
+    await this.messageService.addChatHistory(messageDto);
     this.server.to(socketId).emit('receive', { senderName, message });
   }
 }
