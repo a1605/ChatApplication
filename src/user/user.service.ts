@@ -39,6 +39,7 @@ export class UserService {
       }
       return true;
     } catch (error) {
+      
       return false;
     }
   }
@@ -51,7 +52,7 @@ export class UserService {
         throw err;
       }
       throw new HttpException(
-        'No User Found',
+        'Failed to retrieve all users',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -69,7 +70,7 @@ export class UserService {
         throw err;
       }
       throw new HttpException(
-        'User not found',
+        'Failed to retrieve SocketId',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -85,7 +86,7 @@ export class UserService {
         throw err;
       }
       throw new HttpException(
-        'User not found',
+        'Failed to retrieve Username',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -101,7 +102,7 @@ export class UserService {
         throw err;
       }
       throw new HttpException(
-        'User not found',
+        'Failed to retrieve Username',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

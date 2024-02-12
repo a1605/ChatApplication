@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HASH_VALUE, MAX_NUM, MIN_NUM } from 'constant';
 import { skipCount } from 'utills';
-import { User } from 'src/user/user.entity';
 import { MessageDto } from './messageDto/message.dto';
 import { UserService } from './../user/user.service';
 
@@ -28,25 +27,24 @@ export class MessageService {
         throw err;
       }
       throw new HttpException(
-        'Chat History not found',
+        'Failed to add chat',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
   async getAllChats(
-    @Query('page') page: number = MIN_NUM,
-    @Query('limit') limit: number = MAX_NUM,
+    page: number = MIN_NUM, limit: number = MAX_NUM
   ) {
     try {
       const offset = skipCount(page, limit);
-      const [users, totalCount] = await this.messageRepo.findAndCount({
+      const [chats, totalCount] = await this.messageRepo.findAndCount({
         skip: offset,
         take: limit,
       });
 
       return {
-        results: users,
+        results: chats,
         page,
         limit,
         totalCount,
@@ -56,7 +54,7 @@ export class MessageService {
         throw err;
       }
       throw new HttpException(
-        'Chat not found',
+        'Failed to retrieve chats',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -85,7 +83,7 @@ export class MessageService {
       if (err.status) {
         throw err;
       }
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      throw new HttpException('Failed to retrieve chat history', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

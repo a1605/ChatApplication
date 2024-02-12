@@ -18,7 +18,7 @@ async function populateUserDropdown() {
   const userDropdown = document.getElementById('userDropdown');
   const response = await fetch(FETCH_USERS_URL);
   const allUsers = await response.json();
-  const allUsersExceptCurrent = allUsers.filter(
+  const allUsersExceptCurrent = allUsers.data.filter(
     (user) => user.username !== senderName,
   );
   allUsersExceptCurrent.forEach((user) => {

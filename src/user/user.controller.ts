@@ -1,7 +1,9 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
+import { ResponseInterceptor } from 'src/middleware/middleware.interceptor';
 
 @Controller('user')
+@UseInterceptors(ResponseInterceptor)
 export class UserController {
   constructor(private userService: UserService) {}
   @Get('all-users')
