@@ -13,6 +13,7 @@ function joinChat() {
     }
   });
 }
+
 async function populateUserDropdown() {
   const senderName = document.getElementById('username').value;
   const userDropdown = document.getElementById('userDropdown');
@@ -42,18 +43,17 @@ async function startChat() {
   const receiverUserId = await fetch(receiverUrl);
   const sender_user_id = await senderUserId.json();
   const receiver_user_id = await receiverUserId.json();
-  const FETCH_HISTORY_URL = `${SERVER_URL}${FETCH_CHAT_HISTORY_PATH}sender_user_id=${sender_user_id}&receiver_user_id=${receiver_user_id}`;
+  const FETCH_HISTORY_URL = `${SERVER_URL}${FETCH_CHAT_HISTORY_PATH}sender_user_id=${sender_user_id.data}&receiver_user_id=${receiver_user_id.data}`;
   const history = await fetch(FETCH_HISTORY_URL);
-  const allHistory = await history.json();
+  const chatHistory = await history.json();
   const chatHistoryDiv = document.getElementById('chat-history');
   chatHistoryDiv.innerHTML = '';
-  if (allHistory) {
-    allHistory.forEach((chat) => {
+  if (chatHistory.data) {
+    chatHistory.data.results.forEach((chat) => {
       const chatItem = document.createElement('div');
-      if (chat.sender_user_id.username === senderName)
+      if (chat.sender_user_id.id === sender_user_id.data)
         chatItem.textContent = `You: ${chat.message}`;
-      else
-        chatItem.textContent = `${chat.sender_user_id.username}: ${chat.message}`;
+      else chatItem.textContent = `${senderName}: ${chat.message}`;
 
       chatHistoryDiv.appendChild(chatItem);
     });

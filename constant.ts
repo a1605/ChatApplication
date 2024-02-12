@@ -7,6 +7,4 @@ export const MAX_NUM = 10;
 export const MIN_STRING_LEN = 5;
 export const MAX_STRING_LEN = 30;
 
-export const HASH_VALUE=10
-
-
+export const HASH_VALUE = 10;

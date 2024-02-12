@@ -7,19 +7,12 @@ import { ResponseInterceptor } from 'src/middleware/middleware.interceptor';
 @UseInterceptors(ResponseInterceptor)
 export class MessageController {
   constructor(private messageService: MessageService) {}
-  @Get('allchats')
-  async getAllChats(
-    @Query('page') page: number = MIN_NUM,
-    @Query('limit') limit: number = MAX_NUM,
-  ) {
-    return await this.messageService.getAllChats();
-  }
   @Get('chats')
   async allChatBetweenTwoUsers(
     @Query('sender_user_id') sender_user_id: number,
     @Query('receiver_user_id') receiver_user_id: number,
   ) {
-    return await this.messageService.allChatsHistoryWithTwoUsers(
+    return await this.messageService.allChatsHistoryBetweenTwoUsers(
       sender_user_id,
       receiver_user_id,
     );

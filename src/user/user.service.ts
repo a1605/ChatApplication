@@ -74,6 +74,7 @@ export class UserService {
       );
     }
   }
+
   async findUsernameUsingSocketId(socketId: string) {
     try {
       const user = await this.userRepo.findOne({

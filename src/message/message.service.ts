@@ -33,33 +33,12 @@ export class MessageService {
     }
   }
 
-  async getAllChats(page: number = MIN_NUM, limit: number = MAX_NUM) {
+  async allChatsHistoryBetweenTwoUsers(sender_user_id, receiver_user_id) {
     try {
+      const page = MIN_NUM;
+      const limit = MAX_NUM;
       const offset = skipCount(page, limit);
       const [chats, totalCount] = await this.messageRepo.findAndCount({
-        skip: offset,
-        take: limit,
-      });
-
-      return {
-        results: chats,
-        page,
-        limit,
-        totalCount,
-      };
-    } catch (err) {
-      if (err.status) {
-        throw err;
-      }
-      throw new HttpException(
-        'Failed to retrieve chats',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-  async allChatsHistoryWithTwoUsers(sender_user_id, receiver_user_id) {
-    try {
-      const history = await this.messageRepo.find({
         where: [
           {
             sender_user_id: sender_user_id,
@@ -74,9 +53,16 @@ export class MessageService {
         order: {
           createdAt: 'ASC',
         },
+        skip: offset,
+        take: limit,
       });
-      if (!history) return [];
-      return history;
+      if (!chats) return [];
+      return {
+        results: chats,
+        page,
+        limit,
+        totalCount,
+      };
     } catch (err) {
       if (err.status) {
         throw err;
