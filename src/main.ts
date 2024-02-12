@@ -12,6 +12,6 @@ async function bootstrap() {
     new ExpressAdapter(),
   );
   app.enableCors();
-  await app.listen(process.env.PORT );
+  await app.listen(process.env.PORT);
 }
 bootstrap();

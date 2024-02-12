@@ -39,7 +39,6 @@ export class UserService {
       }
       return true;
     } catch (error) {
-      
       return false;
     }
   }

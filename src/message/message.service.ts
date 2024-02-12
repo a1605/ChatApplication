@@ -33,9 +33,7 @@ export class MessageService {
     }
   }
 
-  async getAllChats(
-    page: number = MIN_NUM, limit: number = MAX_NUM
-  ) {
+  async getAllChats(page: number = MIN_NUM, limit: number = MAX_NUM) {
     try {
       const offset = skipCount(page, limit);
       const [chats, totalCount] = await this.messageRepo.findAndCount({
@@ -83,7 +81,10 @@ export class MessageService {
       if (err.status) {
         throw err;
       }
-      throw new HttpException('Failed to retrieve chat history', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Failed to retrieve chat history',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }
