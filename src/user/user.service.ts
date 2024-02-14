@@ -1,15 +1,21 @@
-import { HttpException, HttpStatus, Injectable, Query } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+  UseInterceptors,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from './user.entity';
 import { CreateUserDto } from './dto/user-create.dto';
 import { HASH_VALUE } from 'constant';
+import { ResponseInterceptor } from 'src/middleware/middleware.interceptor';
 
 @Injectable()
 export class UserService {
   constructor(@InjectRepository(User) private userRepo: Repository<User>) {}
-
   async registerOrLoginUser(createUserDto: CreateUserDto) {
     try {
       var user = await this.userRepo.findOne({
@@ -25,7 +31,7 @@ export class UserService {
           user.password,
         );
         if (!passwordMatch) {
-          throw new Error('Password does not matched ');
+          return false 
         }
         user.socketId = createUserDto.socketId;
         await this.userRepo.save(user);
@@ -39,6 +45,7 @@ export class UserService {
       }
       return true;
     } catch (error) {
+      console.error('Error in registerOrLoginUser:', error.message);
       return false;
     }
   }
@@ -91,6 +98,7 @@ export class UserService {
       );
     }
   }
+
   async findUserIdByUserName(username: string) {
     try {
       const user = await this.userRepo.findOne({

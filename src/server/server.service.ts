@@ -1,4 +1,4 @@
-import { UseGuards } from '@nestjs/common';
+import { UseGuards, UseInterceptors } from '@nestjs/common';
 import {
   SubscribeMessage,
   WebSocketGateway,
@@ -9,6 +9,7 @@ import { UserService } from '../user/user.service';
 import { MessageService } from 'src/message/message.service';
 import { CreateUserDto } from './../user/dto/user-create.dto';
 import { MessageDto } from 'src/message/messageDto/message.dto';
+import { ResponseInterceptor } from 'src/middleware/middleware.interceptor';
 
 @WebSocketGateway({ cors: { origin: '*' } })
 export class ChatGateway {
@@ -22,6 +23,7 @@ export class ChatGateway {
 
   afterInit(server: Server) {}
 
+  @UseInterceptors(ResponseInterceptor)
   @SubscribeMessage('new-user-joined')
   async handleNewAndExistingUserJoined(client: any, data: any) {
     const createUserDto = new CreateUserDto(

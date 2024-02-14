@@ -54,7 +54,6 @@ async function startChat() {
       if (chat.sender_user_id.id === sender_user_id.data)
         chatItem.textContent = `You: ${chat.message}`;
       else chatItem.textContent = `${senderName}: ${chat.message}`;
-
       chatHistoryDiv.appendChild(chatItem);
     });
   } else {
